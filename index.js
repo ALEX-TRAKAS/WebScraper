@@ -1,9 +1,15 @@
+
 const PORT = 8000;
 const axios = require('axios');
 const cheerio = require('cheerio');
 const express = require('express');
 const app = express();
 const url= 'https://www.gazzetta.gr/teams/';
+
+const path = require('path');
+
+app.use(express.static(path.join(__dirname, 'public')));
+
 
 app.get('/sportNews', (req, res) => {
         axios(url+req.query.team) 

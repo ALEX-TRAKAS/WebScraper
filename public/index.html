@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sports News</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+        .news-container {
+            display: flex;
+            flex-direction: column;
+            margin: 20px;
+        }
+        .news-item {
+            display: flex;
+            align-items: center;
+            border-bottom: 1px solid #ccc;
+            padding: 10px 0;
+        }
+        .news-item img {
+            width: 150px;
+            height: 100px;
+            object-fit: cover;
+            margin-right: 20px;
+        }
+        .news-details {
+            flex-grow: 1;
+        }
+        .news-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .news-date {
+            color: #555;
+            font-size: 14px;
+        }
+        .news-url {
+            color: blue;
+            text-decoration: none;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Latest Sports News</h1>
+    <div>
+        <label for="team">Enter Team Name: </label>
+        <input type="text" id="team" name="team">
+        <button onclick="fetchNews()">Get News</button>
+    </div>
+    
+    <div class="news-container" id="newsContainer">
+    </div>
+
+    <script>
+        function fetchNews() {
+            const team = document.getElementById('team').value;
+            const url = `http://localhost:8000/sportNews?team=${team}`;
+            
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const newsContainer = document.getElementById('newsContainer');
+                    newsContainer.innerHTML = ''; // Clear previous results
+                    
+                    data.forEach(article => {
+                        const newsItem = document.createElement('div');
+                        newsItem.classList.add('news-item');
+                        
+                        const img = document.createElement('img');
+                        img.src = article.imgSrc;
+                        img.alt = article.title;
+
+                        const details = document.createElement('div');
+                        details.classList.add('news-details');
+
+                        const title = document.createElement('div');
+                        title.classList.add('news-title');
+                        title.textContent = article.title;
+
+                        const date = document.createElement('div');
+                        date.classList.add('news-date');
+                        date.textContent = `Published: ${article.date}`;
+
+                        const link = document.createElement('a');
+                        link.href = article.url;
+                        link.textContent = 'Read more';
+                        link.classList.add('news-url');
+                        link.target = '_blank';
+
+                        details.appendChild(title);
+                        details.appendChild(date);
+                        details.appendChild(link);
+
+                        newsItem.appendChild(img);
+                        newsItem.appendChild(details);
+
+                        newsContainer.appendChild(newsItem);
+                    });
+                })
+                .catch(err => {
+                    console.error('Error fetching news:', err);
+                });
+        }
+    </script>
+</body>
+</html>
